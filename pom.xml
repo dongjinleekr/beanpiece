@@ -3,10 +3,35 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>com.github.dongjinleekr</groupId>
     <artifactId>beanpiece</artifactId>
     <version>0.1-SNAPSHOT</version>
+    <profiles>
+        <profile>
+            <id>osx</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <properties>
+                <library.prefix>lib</library.prefix>
+                <library.ext>jnilib</library.ext>
+            </properties>
+        </profile>
+        <profile>
+            <id>unix</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <properties>
+                <library.prefix>lib</library.prefix>
+                <library.ext>so</library.ext>
+            </properties>
+        </profile>
+    </profiles>
     <dependencies>
         <!-- Test Dependencies -->
         <dependency>
@@ -46,6 +71,7 @@
                 <version>1.0-alpha-8</version>
                 <configuration>
                     <javahOS>darwin</javahOS>
+                    <!-- javah -->
                     <javahOutputDirectory>${project.basedir}/src/main/native/include</javahOutputDirectory>
                     <javahClassNames>
                         <javahClassName>com.github.dongjinleekr.beanpiece.Processor</javahClassName>
@@ -66,11 +92,14 @@
                             <directory>${project.basedir}/src/main/native/include</directory>
                         </source>
                     </sources>
+                    <!-- link -->
                     <linkerStartOptions>
                         <linkerStartOption>-prebind -dynamiclib -lc -ldl</linkerStartOption>
                     </linkerStartOptions>
                     <linkerEndOptions>
-                        <linkerEndOption>-o ${project.build.directory}/libbeanpiece.jnilib</linkerEndOption>
+                        <linkerEndOption>
+                            -o ${project.build.directory}/${library.prefix}beanpiece.${library.ext}
+                        </linkerEndOption>
                     </linkerEndOptions>
                 </configuration>
                 <executions>
