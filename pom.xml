@@ -7,6 +7,27 @@
     <groupId>com.github.dongjinleekr</groupId>
     <artifactId>beanpiece</artifactId>
     <version>0.1-SNAPSHOT</version>
+    <dependencies>
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hamcrest</groupId>
+                    <artifactId>hamcrest-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
     <build>
         <plugins>
             <plugin>
@@ -24,10 +45,33 @@
                 <artifactId>native-maven-plugin</artifactId>
                 <version>1.0-alpha-8</version>
                 <configuration>
+                    <javahOS>darwin</javahOS>
                     <javahOutputDirectory>${project.basedir}/src/main/native/include</javahOutputDirectory>
                     <javahClassNames>
                         <javahClassName>com.github.dongjinleekr.beanpiece.Processor</javahClassName>
                     </javahClassNames>
+                    <!-- compile -->
+                    <compilerProvider>generic</compilerProvider>
+                    <compilerStartOptions>
+                        <compilerStartOption>-fPIC -O</compilerStartOption>
+                    </compilerStartOptions>
+                    <sources>
+                        <source>
+                            <directory>${project.basedir}/src/main/native</directory>
+                            <fileNames>
+                                <fileName>processor.c</fileName>
+                            </fileNames>
+                        </source>
+                        <source>
+                            <directory>${project.basedir}/src/main/native/include</directory>
+                        </source>
+                    </sources>
+                    <linkerStartOptions>
+                        <linkerStartOption>-prebind -dynamiclib -lc -ldl</linkerStartOption>
+                    </linkerStartOptions>
+                    <linkerEndOptions>
+                        <linkerEndOption>-o ${project.build.directory}/libbeanpiece.jnilib</linkerEndOption>
+                    </linkerEndOptions>
                 </configuration>
                 <executions>
                     <execution>
@@ -35,9 +79,21 @@
                         <phase>compile</phase>
                         <goals>
                             <goal>javah</goal>
+                            <goal>initialize</goal>
+                            <goal>compile</goal>
+                            <goal>link</goal>
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.20.1</version>
+                <configuration>
+                    <forkMode>once</forkMode>
+                    <argLine>-Djava.library.path=${project.build.directory}</argLine>
+                </configuration>
             </plugin>
         </plugins>
     </build>
