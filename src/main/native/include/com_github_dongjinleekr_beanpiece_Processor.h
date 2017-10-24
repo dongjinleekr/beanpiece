@@ -9,11 +9,19 @@ extern "C" {
 #endif
 /*
  * Class:     com_github_dongjinleekr_beanpiece_Processor
- * Method:    getString
- * Signature: ()Ljava/lang/String;
+ * Method:    load
+ * Signature: (Ljava/lang/String;)V
  */
-JNIEXPORT jstring JNICALL Java_com_github_dongjinleekr_beanpiece_Processor_getString
-  (JNIEnv *, jobject);
+JNIEXPORT void JNICALL Java_com_github_dongjinleekr_beanpiece_Processor_load
+  (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     com_github_dongjinleekr_beanpiece_Processor
+ * Method:    encode
+ * Signature: (Ljava/lang/String;)Ljava/util/List;
+ */
+JNIEXPORT jobject JNICALL Java_com_github_dongjinleekr_beanpiece_Processor_encode
+  (JNIEnv *, jobject, jstring);
 
 #ifdef __cplusplus
 }

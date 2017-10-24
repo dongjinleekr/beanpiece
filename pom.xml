@@ -6,32 +6,6 @@
     <groupId>com.github.dongjinleekr</groupId>
     <artifactId>beanpiece</artifactId>
     <version>0.1-SNAPSHOT</version>
-    <profiles>
-        <profile>
-            <id>osx</id>
-            <activation>
-                <os>
-                    <family>mac</family>
-                </os>
-            </activation>
-            <properties>
-                <library.prefix>lib</library.prefix>
-                <library.ext>jnilib</library.ext>
-            </properties>
-        </profile>
-        <profile>
-            <id>unix</id>
-            <activation>
-                <os>
-                    <family>unix</family>
-                </os>
-            </activation>
-            <properties>
-                <library.prefix>lib</library.prefix>
-                <library.ext>so</library.ext>
-            </properties>
-        </profile>
-    </profiles>
     <dependencies>
         <!-- Test Dependencies -->
         <dependency>
@@ -79,13 +53,14 @@
                     <!-- compile -->
                     <compilerProvider>generic</compilerProvider>
                     <compilerStartOptions>
-                        <compilerStartOption>-fPIC -O</compilerStartOption>
+                        <compilerStartOption>-std=c++11 -fPIC -O</compilerStartOption>
                     </compilerStartOptions>
                     <sources>
                         <source>
                             <directory>${project.basedir}/src/main/native</directory>
                             <fileNames>
-                                <fileName>processor.c</fileName>
+                                <fileName>processor.cc</fileName>
+                                <fileName>jni_utils.cc</fileName>
                             </fileNames>
                         </source>
                         <source>
@@ -93,12 +68,14 @@
                         </source>
                     </sources>
                     <!-- link -->
+                    <linkerProvider>generic</linkerProvider>
+                    <linkerExecutable>g++</linkerExecutable>
                     <linkerStartOptions>
-                        <linkerStartOption>-prebind -dynamiclib -lc -ldl</linkerStartOption>
+                        <linkerStartOption>-prebind -dynamiclib -lc -ldl -lsentencepiece</linkerStartOption>
                     </linkerStartOptions>
                     <linkerEndOptions>
                         <linkerEndOption>
-                            -o ${project.build.directory}/${library.prefix}beanpiece.${library.ext}
+                            -o ${project.build.directory}/libbeanpiece.jnilib
                         </linkerEndOption>
                     </linkerEndOptions>
                 </configuration>
