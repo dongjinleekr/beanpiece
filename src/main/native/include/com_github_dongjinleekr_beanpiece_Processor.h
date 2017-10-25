@@ -17,11 +17,35 @@ JNIEXPORT void JNICALL Java_com_github_dongjinleekr_beanpiece_Processor_load
 
 /*
  * Class:     com_github_dongjinleekr_beanpiece_Processor
- * Method:    encode
+ * Method:    encodeToPieces
  * Signature: (Ljava/lang/String;)Ljava/util/List;
  */
-JNIEXPORT jobject JNICALL Java_com_github_dongjinleekr_beanpiece_Processor_encode
+JNIEXPORT jobject JNICALL Java_com_github_dongjinleekr_beanpiece_Processor_encodeToPieces
   (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     com_github_dongjinleekr_beanpiece_Processor
+ * Method:    encodeToIds
+ * Signature: (Ljava/lang/String;)Ljava/util/List;
+ */
+JNIEXPORT jobject JNICALL Java_com_github_dongjinleekr_beanpiece_Processor_encodeToIds
+  (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     com_github_dongjinleekr_beanpiece_Processor
+ * Method:    decodePieces
+ * Signature: (Ljava/util/List;)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_com_github_dongjinleekr_beanpiece_Processor_decodePieces
+  (JNIEnv *, jobject, jobject);
+
+/*
+ * Class:     com_github_dongjinleekr_beanpiece_Processor
+ * Method:    decodeIds
+ * Signature: (Ljava/util/List;)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_com_github_dongjinleekr_beanpiece_Processor_decodeIds
+  (JNIEnv *, jobject, jobject);
 
 #ifdef __cplusplus
 }
