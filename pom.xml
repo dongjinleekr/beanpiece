@@ -3,9 +3,29 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.github.dongjinleekr</groupId>
+    <groupId>com.dongjinlee</groupId>
     <artifactId>beanpiece</artifactId>
     <version>0.1-SNAPSHOT</version>
+    <scm>
+        <connection>scm:git:git@github.com:dongjinleekr/beanpiece.git</connection>
+        <developerConnection>scm:git:git@github.com:dongjinleekr/beanpiece.git</developerConnection>
+        <url>https://github.com/dongjinleekr/beanpiece</url>
+    </scm>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+    <properties>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
     <dependencies>
         <!-- Test Dependencies -->
         <dependency>
@@ -34,10 +54,15 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.7.0</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                    <encoding>UTF-8</encoding>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -48,7 +73,7 @@
                     <!-- javah -->
                     <javahOutputDirectory>${project.basedir}/src/main/native/include</javahOutputDirectory>
                     <javahClassNames>
-                        <javahClassName>com.github.dongjinleekr.beanpiece.Processor</javahClassName>
+                        <javahClassName>com.dongjinlee.beanpiece.Processor</javahClassName>
                     </javahClassNames>
                     <!-- compile -->
                     <compilerProvider>generic</compilerProvider>
@@ -100,6 +125,20 @@
                     <forkMode>once</forkMode>
                     <argLine>-Djava.library.path=${project.build.directory}</argLine>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

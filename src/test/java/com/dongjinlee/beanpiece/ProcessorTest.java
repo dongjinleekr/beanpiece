@@ -1,11 +1,10 @@
-package com.github.dongjinleekr.beanpiece;
+package com.dongjinlee.beanpiece;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;

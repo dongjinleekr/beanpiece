@@ -1,17 +1,16 @@
-#include "com_github_dongjinleekr_beanpiece_Processor.h"
+#include "com_dongjinlee_beanpiece_Processor.h"
 
-#include <iostream>
 #include "sentencepiece_processor.h"
 #include "jni_utils.h"
 
 sentencepiece::SentencePieceProcessor processor;
 
-JNIEXPORT void JNICALL Java_com_github_dongjinleekr_beanpiece_Processor_load
+JNIEXPORT void JNICALL Java_com_dongjinlee_beanpiece_Processor_load
     (JNIEnv *env, jobject thiz, jstring jpath) {
     processor.LoadOrDie(jstring2string(env, jpath));
 }
 
-JNIEXPORT jobject JNICALL Java_com_github_dongjinleekr_beanpiece_Processor_encodeToPieces
+JNIEXPORT jobject JNICALL Java_com_dongjinlee_beanpiece_Processor_encodeToPieces
     (JNIEnv *env, jobject thiz, jstring jstr) {
     std::string str = jstring2string(env, jstr);
     std::vector<std::string> pieces;
@@ -32,7 +31,7 @@ JNIEXPORT jobject JNICALL Java_com_github_dongjinleekr_beanpiece_Processor_encod
     return ret;
 }
 
-JNIEXPORT jobject JNICALL Java_com_github_dongjinleekr_beanpiece_Processor_encodeToIds
+JNIEXPORT jobject JNICALL Java_com_dongjinlee_beanpiece_Processor_encodeToIds
     (JNIEnv *env, jobject thiz, jstring jstr) {
     std::string str = jstring2string(env, jstr);
     std::vector<int> ids;
@@ -56,7 +55,7 @@ JNIEXPORT jobject JNICALL Java_com_github_dongjinleekr_beanpiece_Processor_encod
     return ret;
 }
 
-JNIEXPORT jstring JNICALL Java_com_github_dongjinleekr_beanpiece_Processor_decodePieces
+JNIEXPORT jstring JNICALL Java_com_dongjinlee_beanpiece_Processor_decodePieces
     (JNIEnv *env, jobject thiz, jobject jobj) {
     std::vector<std::string> pieces = jstrlist2strvec(env, jobj);
     std::string decoded;
@@ -65,7 +64,7 @@ JNIEXPORT jstring JNICALL Java_com_github_dongjinleekr_beanpiece_Processor_decod
     return jstr;
 }
 
-JNIEXPORT jstring JNICALL Java_com_github_dongjinleekr_beanpiece_Processor_decodeIds
+JNIEXPORT jstring JNICALL Java_com_dongjinlee_beanpiece_Processor_decodeIds
     (JNIEnv *env, jobject thiz, jobject jobj) {
     std::vector<int> ids = jintlist2intvec(env, jobj);
     std::string decoded;

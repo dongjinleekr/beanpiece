@@ -1,4 +1,4 @@
-package com.github.dongjinleekr.beanpiece;
+package com.dongjinlee.beanpiece;
 
 import java.io.File;
 import java.nio.file.Path;
