@@ -1,6 +1,7 @@
 package com.dongjinlee.beanpiece;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -9,7 +10,11 @@ import java.util.List;
  */
 public class Processor {
     static {
-        System.loadLibrary("beanpiece");
+        try {
+            NativeUtils.loadLibraryFromJar("/libbeanpiece");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void load(File file) throws IllegalStateException {

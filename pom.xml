@@ -6,10 +6,26 @@
     <groupId>com.dongjinlee</groupId>
     <artifactId>beanpiece</artifactId>
     <version>0.1-SNAPSHOT</version>
+    <name>Beanpiece</name>
+    <description>Java bindings for Google SentencePiece</description>
+    <url>https://github.com/dongjinleekr/beanpiece</url>
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Lee Dongjin</name>
+            <email>dongjin@apache.org</email>
+        </developer>
+    </developers>
     <scm>
         <connection>scm:git:git@github.com:dongjinleekr/beanpiece.git</connection>
         <developerConnection>scm:git:git@github.com:dongjinleekr/beanpiece.git</developerConnection>
-        <url>https://github.com/dongjinleekr/beanpiece</url>
+        <url>scm:git:git@github.com:dongjinleekr/beanpiece.git</url>
+        <tag>HEAD</tag>
     </scm>
     <distributionManagement>
         <snapshotRepository>
@@ -21,6 +37,30 @@
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
+    <profiles>
+        <profile>
+            <id>linux</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <properties>
+                <native.os>linux</native.os>
+            </properties>
+        </profile>
+        <profile>
+            <id>osx</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <properties>
+                <native.os>macos</native.os>
+            </properties>
+        </profile>
+    </profiles>
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
@@ -63,6 +103,17 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.0.2</version>
+                <executions>
+                    <execution>
+                        <id>default-jar</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>${native.os}</classifier>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -100,7 +151,7 @@
                     </linkerStartOptions>
                     <linkerEndOptions>
                         <linkerEndOption>
-                            -o ${project.build.directory}/libbeanpiece.jnilib
+                            -o ${project.basedir}/src/main/resources/libbeanpiece
                         </linkerEndOption>
                     </linkerEndOptions>
                 </configuration>
@@ -116,15 +167,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.20.1</version>
-                <configuration>
-                    <forkMode>once</forkMode>
-                    <argLine>-Djava.library.path=${project.build.directory}</argLine>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
