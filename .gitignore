@@ -1,25 +1,63 @@
-# Compiled class file
-*.class
-
-# Log file
-*.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# Build output
+/build
+/*/build
+/*/*/build
+/out
+/*/out
+/*/*/out
+**/gen-java
+**/gen-src
 
 # Package Files #
 *.jar
+!/gradle/wrapper/gradle-wrapper.jar
 *.war
 *.ear
-*.zip
-*.tar.gz
-*.rar
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-# generated native library
-src/main/resources/libbeanpiece
+# Gradle
+.gradle
+
+# IntelliJ
+.idea
+*.iml
+*.iws
+*.ipr
+*.ids
+*.orig
+/classes
+/out
+
+# VSCode
+/.vscode
+
+# Eclipse
+*.pydevproject
+.project
+.metadata
+/bin
+/*/bin
+/tmp
+/*/tmp
+*.tmp
+*.bak
+*.swp
+*~.nib
+.classpath
+.settings
+.loadpath
+
+# External tool builders
+.externalToolBuilders/**
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# CDT-specific
+.cproject
+
+# PDT-specific
+.buildpath
+
