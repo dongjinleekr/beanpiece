@@ -16,8 +16,8 @@ logBuffered in Test := false
 parallelExecution in Test := false
 
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest" % "3.0.5" % "test",
-  "org.scalacheck" %% "scalacheck" % "1.13.5" % "test"
+  "junit" % "junit" % "4.12" % "test",
+  "org.hamcrest" % "hamcrest-all" % "1.3" % "test"
 )
 
 javacOptions ++= Seq("-source", "1.7", "-target", "1.7")
@@ -114,7 +114,7 @@ publishTo := {
   if (isSnapshot.value)
     Some("snapshots" at nexus + "content/repositories/snapshots")
   else
-    Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+    Some("releases" at nexus + "service/local/staging/deploy/maven2")
 }
 
 publishMavenStyle := true
