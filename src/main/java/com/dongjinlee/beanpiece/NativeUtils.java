@@ -24,7 +24,10 @@
 
 package com.dongjinlee.beanpiece;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -40,9 +43,10 @@ import java.nio.file.StandardCopyOption;
  * @see <a href="https://github.com/adamheinrich/native-utils">Github:adamheinrich/native-utils</a>
  */
 
-public class NativeUtils {
+public final class NativeUtils {
     /**
-     * The minimum length a prefix for a file has to have according to {@link File#createTempFile(String, String)}}.
+     * The minimum length a prefix for a file has to have according to
+     * {@link File#createTempFile(String, String)}}.
      */
     private static final int MIN_PREFIX_LENGTH = 3;
 
@@ -52,23 +56,24 @@ public class NativeUtils {
     private static File temporaryDir;
 
     /**
-     * Private constructor - this class will never be instanced
+     * Private constructor - this class will never be instanced.
      */
     private NativeUtils() {
     }
 
     /**
-     * Loads library from current JAR archive
-     * <p>
-     * The file from JAR is copied into system temporary directory and then loaded. The temporary file is deleted after
-     * exiting.
+     * Loads library from current JAR archive.
+     *
+     * <p>The file from JAR is copied into system temporary directory and then loaded. The temporary file is
+     * deleted after exiting.
      * Method uses String as filename because the pathname is "abstract", not system-dependent.
      *
      * @param path The path of file inside JAR as absolute path (beginning with '/'), e.g. /package/File.ext
      * @throws IOException              If temporary file creation or read/write operation fails
      * @throws IllegalArgumentException If source file (param path) does not exist
-     * @throws IllegalArgumentException If the path is not absolute or if the filename is shorter than three characters
-     *                                  (restriction of {@link File#createTempFile(java.lang.String, java.lang.String)}).
+     * @throws IllegalArgumentException If the path is not absolute or if the filename is shorter than three
+     *                                  characters (restriction of
+     *                                  {@link File#createTempFile(java.lang.String, java.lang.String)}).
      * @throws FileNotFoundException    If the file could not be found inside the JAR.
      */
     public static void loadLibraryFromJar(String path) throws IOException {
@@ -125,9 +130,7 @@ public class NativeUtils {
                 return true;
             }
             return false;
-        } catch (FileSystemNotFoundException
-                | ProviderNotFoundException
-                | SecurityException e) {
+        } catch (FileSystemNotFoundException | ProviderNotFoundException | SecurityException e) {
             return false;
         }
     }
@@ -136,8 +139,9 @@ public class NativeUtils {
         String tempDir = System.getProperty("java.io.tmpdir");
         File generatedDir = new File(tempDir, prefix + System.nanoTime());
 
-        if (!generatedDir.mkdir())
+        if (!generatedDir.mkdir()) {
             throw new IOException("Failed to create temp directory " + generatedDir.getName());
+        }
 
         return generatedDir;
     }
