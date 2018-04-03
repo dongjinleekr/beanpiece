@@ -20,8 +20,6 @@ libraryDependencies ++= Seq(
   "org.hamcrest" % "hamcrest-all" % "1.3" % "test"
 )
 
-javacOptions ++= Seq("-source", "1.7", "-target", "1.7")
-
 javacOptions in doc := Seq("-source", "1.7")
 
 // sbt-jni configuration
