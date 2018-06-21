@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Lee Dongjin
+ * Copyright (c) 2014 Spotify AB
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,29 +19,12 @@
  * under the License.
  */
 
-package com.dongjinlee.beanpiece;
+package com.spotify.jni.annotations;
 
 /**
- * The facade to sentencepiece::SentencePieceProcessor.
+ * Annotation which indicates that a piece of seemingly-unused Java code
+ * is actually being referenced by native code via JNI. Since annotations
+ * cannot subclass each other, this should be used in combination with
+ * {@link SuppressWarnings()}.
  */
-public final class Processor {
-    static {
-        System.loadLibrary("sentencepiece");
-        System.loadLibrary("beanpiece");
-    }
-
-    /**
-     * Pointer to SentencePieceProcessor instance.
-     */
-    private long ptr;
-
-    public Processor() {
-        ptr = initialize();
-    }
-
-    private native long initialize();
-
-    public long ptr() {
-        return ptr;
-    }
-}
+public @interface UsedByNativeCode {}

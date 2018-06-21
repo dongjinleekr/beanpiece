@@ -20,14 +20,51 @@ libraryDependencies ++= Seq(
   "org.hamcrest" % "hamcrest-all" % "1.3" % "test"
 )
 
-javacOptions in doc := Seq("-source", "1.7")
+javacOptions ++= Seq("-source", "1.7")
 
 // sbt-jni configuration
+
 jniLibraryName := "beanpiece"
+
+jniNativeCompiler := "g++"
 
 jniNativeClasses := Seq(
   "com.dongjinlee.beanpiece.Processor"
 )
+
+val os = System.getProperty("os.name").toLowerCase.replace(' ', '_') match {
+  case os if os startsWith "win" => "win"
+  case os if os startsWith "mac" => "darwin"
+  case os => os
+}
+
+val arch = System.getProperty("os.arch")
+
+lazy val soFileSrc = settingKey[File]("Where the shared object will be copied from")
+
+soFileSrc := {
+  baseDirectory.value / "library" / os / arch / ("libsentencepiece." + jniLibSuffix.value)
+}
+
+lazy val soFileDst = settingKey[File]("Where the shared object will be copied to")
+
+soFileDst := {
+  jniBinPath.value / ("libsentencepiece." + jniLibSuffix.value)
+}
+
+jniBinPath := {
+  (target in Compile).value / "classes" / os / arch
+}
+
+jniIncludes ++= Seq(
+  "-I" + jniNativeSources.value.toString
+)
+
+jniGccFlags ++= Seq(
+  // "-L" + , "-lsentencepiece"
+)
+
+jniUseCpp11 := true
 
 jniLibSuffix := (System.getProperty("os.name").toLowerCase match {
   case os if os startsWith "mac" => "dylib"
@@ -36,67 +73,45 @@ jniLibSuffix := (System.getProperty("os.name").toLowerCase match {
   case _ => "so"
 })
 
-jniNativeCompiler := "g++"
+// Temp: as of June 2018, sbt-jni 2.0 does not support compile flags ordering. So, override the implementation.
+import scala.sys.process.Process
 
-jniUseCpp11 := true
-
-jniCppExtensions := Seq("cc")
-
-jniGccFlags ++= Seq(
-  "-std=c++11", "-fPIC"
-)
-
-// compilation on Windows with MSYS/gcc needs extra flags in order
-// to produce correct DLLs, also it alway produces position independent
-// code so let's remove the flag and silence a warning
-jniGccFlags := (
-  if (System.getProperty("os.name").toLowerCase startsWith "win")
-    jniGccFlags.value.filterNot(_ == "-fPIC") ++
-      Seq("-D_JNI_IMPLEMENTATION_", "-Wl,--kill-at", "-static-libgcc", "-static-libstdc++")
-  else
-    jniGccFlags.value
-  )
-
-// Special case the jni platform header on windows (use the one from the repo)
-// because the JDK provided one is not compatible with the standard compliant
-// compilers but only with VisualStudio - our build uses MSYS/gcc
-jniJreIncludes := {
-  jniJdkHome.value.fold(Seq.empty[String]) { home =>
-    val absHome = home.getAbsolutePath
-    if (System.getProperty("os.name").toLowerCase startsWith "win") {
-      Seq(s"include").map(file => s"-I$absHome/../$file") ++
-        Seq(s"""-I${sourceDirectory.value / "windows" / "include"}""")
-    } else {
-      val jniPlatformFolder = System.getProperty("os.name").toLowerCase match {
-        case os if os.startsWith("mac") => "darwin"
-        case os => os
-      }
-      // in a typical installation, JDK files are one directory above the
-      // location of the JRE set in 'java.home'
-      Seq(s"include", s"include/$jniPlatformFolder").map(file => s"-I$absHome/../$file")
-    }
+def checkExitCode(name: String, exitCode: Int): Unit = {
+  if (exitCode != 0) {
+    throw new MessageOnlyException(
+      s"$name exited with non-zero status ($exitCode)"
+    )
   }
 }
 
-jniIncludes ++= Seq(
-  "-I" + jniNativeSources.value.toString + "/include"
-)
+jniCompile := Def.task {
+  val log = streams.value.log
+  jniBinPath.value.getAbsoluteFile.mkdirs()
+  val sources = jniSourceFiles.value.mkString(" ")
+  val flags = jniGccFlags.value.mkString(" ")
+  val command = s"${jniNativeCompiler.value} $flags -o ${jniBinPath.value}/lib${jniLibraryName.value}.${jniLibSuffix.value} $sources -L${(baseDirectory.value / "library" / os / arch).toString} -lsentencepiece"
+  log.info(command)
+  checkExitCode(jniNativeCompiler.value, Process(command, jniBinPath.value) ! log)
+}.dependsOn(jniJavah)
+  .tag(Tags.Compile, Tags.CPU)
+  .value
 
-// Where to put the compiled binaries
-jniBinPath := {
-  val os = System.getProperty("os.name").toLowerCase.replace(' ', '_') match {
-    case os if os startsWith "win" => "win"
-    case os if os startsWith "mac" => "darwin"
-    case os => os
-  }
-  val arch = System.getProperty("os.arch")
-  (target in Compile).value / "classes" / os / arch
+// copy sentencepiece shared object into target directory.
+lazy val copySharedObject = taskKey[Unit](s"Copy sentencepiece shared object into target directory")
+
+copySharedObject := {
+  println(s"Copying ${soFileSrc.value} into ${soFileDst.value}")
+  IO.copyFile(soFileSrc.value, soFileDst.value)
+  println("Copying completed.")
 }
 
-// Where to put the generated headers for the JNI lib
-jniHeadersPath := (target in Compile).value / "classes" / "include"
+// dependency: jniCompile -> copySharedObject
+copySharedObject := (copySharedObject dependsOn jniCompile).value
 
-// Sonatype
+// dependency: copySharedObject -> compile
+compile := (compile dependsOn copySharedObject).value
+
+// sbt-sonatype configuration
 
 homepage := Some(url("https://github.com/dongjinleekr/beanpiece"))
 scmInfo := Some(ScmInfo(url("https://github.com/dongjinleekr/beanpiece"),
