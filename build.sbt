@@ -5,7 +5,7 @@ version := "0.2-SNAPSHOT"
 
 scalaVersion := "2.12.4"
 
-enablePlugins(JniPlugin)
+enablePlugins(JniPlugin, SbtOsgi)
 
 autoScalaLibrary := false
 
@@ -28,13 +28,12 @@ jniLibraryName := "beanpiece"
 
 jniNativeCompiler := "g++"
 
-jniNativeClasses := Seq(
-  "com.dongjinlee.beanpiece.Processor"
-)
+import java.util.Locale
 
-val os = System.getProperty("os.name").toLowerCase.replace(' ', '_') match {
-  case os if os startsWith "win" => "win"
-  case os if os startsWith "mac" => "darwin"
+val os = System.getProperty("os.name").toLowerCase(Locale.ENGLISH) match {
+  case os if os contains "win" => "windows"
+  case os if os contains "mac" => "osx"
+  case os if (os contains "nix") || (os contains "nux") => "linux"
   case os => os
 }
 
@@ -66,14 +65,21 @@ jniGccFlags ++= Seq(
 
 jniUseCpp11 := true
 
-jniLibSuffix := (System.getProperty("os.name").toLowerCase match {
+jniLibSuffix := (System.getProperty("os.name").toLowerCase(Locale.ENGLISH) match {
   case os if os startsWith "mac" => "dylib"
   case os if os startsWith "darwin" => "dylib"
   case os if os startsWith "win" => "dll"
   case _ => "so"
 })
 
+// Temp: skip jniJavah task.
+jniJavah := Def.task {
+  val log = streams.value.log
+  log.info("skipping header generation.")
+}
+
 // Temp: as of June 2018, sbt-jni 2.0 does not support compile flags ordering. So, override the implementation.
+
 import scala.sys.process.Process
 
 def checkExitCode(name: String, exitCode: Int): Unit = {
