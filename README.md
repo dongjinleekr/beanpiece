@@ -1,4 +1,4 @@
-Beanpiece: Java binding to [Google SentencePiece](https://github.com/google/sentencepiece)
+Beanpiece: A Java binding to [Google SentencePiece](https://github.com/google/sentencepiece)
 =====
 
 [![Build Status](https://api.travis-ci.org/dongjinleekr/beanpiece.svg)](https://travis-ci.org/dongjinleekr/beanpiece)
@@ -7,17 +7,32 @@ Beanpiece: Java binding to [Google SentencePiece](https://github.com/google/sent
 
 SentencePiece is an unsupervised text tokenizer and detokenizer, developed by Google. Beanpiece provides a Java API to SentencePiece.
 
-This project uses Adam Heinrich's awesome library, [native-utils](https://www.adamheinrich.com/blog/2012/12/how-to-load-native-jni-library-from-jar/), which is distributed under MIT License.
-
 # Compatibility
 
 As of version 0.2, this library provides API compatibility to [commit 1ff5904(Apr 1, 2018)](https://github.com/google/sentencepiece/commit/1ff5904e6606c2ece00d52fd419c9e199ce56596).
 
 # How to build
 
-The following tools and libraries are required to build Beanpiece:
+The following tools are required to build Beanpiece:
 
-* g++ compiler, which supports c++ 11.
-* [SentencePiece](https://github.com/google/sentencepiece) library
+- sbt
+- g++ compiler, which supports c++ 11.
 
-Since there is no pre-built package of SentencePiece library, please download the project and install it following the guide provided.
+To build the project, just give:
+
+```sh
+sbt package
+```
+
+It will take all the tasks needed, from copying shared libraries from compiling, packaging the Java source code.
+
+# Note for Windows/Mac Users
+
+As of version 0.2, the project only contains `libsentencepiece.so` for Linux (amd64) only. Because of that, the built jar will not run on osx or windows - they will be added at 0.3.
+
+Until then, please build the sentencepiece shared library by yourself and copy them into:
+
+- windows: `/library/windows/[i386|amd64|ppc]`
+- osx: `/library/windows/[i386|amd64|ppc]`
+
+After then, you can build the project as described above.
