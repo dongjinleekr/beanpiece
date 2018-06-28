@@ -82,6 +82,9 @@ public final class NativeUtils {
 
     /**
      * Loads specified library, regarding underlying system (i.e., os and architecture.)
+     *
+     * @param library Native library to load
+     * @throws IOException if it fails to load {@code library}
      */
     public static synchronized void load(final String library) throws IOException {
         String path = path(library);
@@ -93,6 +96,8 @@ public final class NativeUtils {
 
     /**
      * Loads all required libraries at once.
+     *
+     * @throws IOException if it fails to load any of required libraries
      */
     public static void load() throws IOException {
         load("sentencepiece");

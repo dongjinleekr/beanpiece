@@ -50,7 +50,8 @@ public final class ProcessorBuilder {
     /**
      * Sets the location to the SentencePiece model file.
      *
-     * @param model {@link Path} to the SentencePiece model file.
+     * @param model {@link Path} to the SentencePiece model file
+     * @return {@link ProcessorBuilder} for build the processor
      */
     public ProcessorBuilder setModel(Path model) {
         this.model = model;
@@ -59,6 +60,8 @@ public final class ProcessorBuilder {
 
     /**
      * Returns a newly-created {@link Processor} based on the configuration properties set so far.
+     *
+     * @return {@link Processor} instance with the properties specified so far
      */
     public Processor build() {
         Objects.requireNonNull(model, "model");
