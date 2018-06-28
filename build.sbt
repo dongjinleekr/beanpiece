@@ -6,8 +6,6 @@ version := "0.3-SNAPSHOT"
 
 description := "Java bindings for Google SentencePiece."
 
-enablePlugins(JniPlugin)
-
 autoScalaLibrary := false
 
 crossPaths := false
@@ -22,6 +20,10 @@ libraryDependencies ++= Seq(
 )
 
 javacOptions ++= Seq("-source", "1.7")
+
+// enable plugins: sbt-jni
+
+enablePlugins(JniPlugin)
 
 // sbt-jni configuration
 

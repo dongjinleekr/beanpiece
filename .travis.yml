@@ -5,14 +5,12 @@ os:
 branches:
   only:
   - master
+  - 'release/0.3'
 notifications:
   email: false
 jdk:
 - openjdk7
 - openjdk8
-- oraclejdk7
-- oraclejdk8
-- oraclejdk9
 before_script:
 - curl -L -o $HOME/.sbt/launchers/1.0.4/sbt-launch.jar http://central.maven.org/maven2/org/scala-sbt/launcher/1.0.4/launcher-1.0.4-javadoc.jar
 script:
