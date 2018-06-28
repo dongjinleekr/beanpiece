@@ -1,11 +1,12 @@
-
 name := "beanpiece"
+
+organization := "com.dongjinlee"
 
 version := "0.2-SNAPSHOT"
 
-scalaVersion := "2.12.4"
+description := "Java bindings for Google SentencePiece."
 
-enablePlugins(JniPlugin, SbtOsgi)
+enablePlugins(JniPlugin)
 
 autoScalaLibrary := false
 
@@ -115,7 +116,7 @@ copySharedObject := {
 copySharedObject := (copySharedObject dependsOn jniCompile).value
 
 // dependency: copySharedObject -> compile
-compile := (compile dependsOn copySharedObject).value
+(compile in Compile) := ((compile in Compile) dependsOn copySharedObject).value
 
 // sbt-sonatype configuration
 
@@ -141,10 +142,6 @@ publishMavenStyle := true
 publishArtifact in Test := false
 
 pomIncludeRepository := { _ => false }
-
-organization := "com.dongjinlee"
-
-description := "Java bindings for Google SentencePiece."
 
 packageOptions in(Compile, packageBin) +=
   Package.ManifestAttributes(new java.util.jar.Attributes.Name("Automatic-Module-Name") -> "com.dongjinlee.beanpiece")
