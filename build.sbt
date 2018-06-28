@@ -2,7 +2,7 @@ name := "beanpiece"
 
 organization := "com.dongjinlee"
 
-version := "0.2"
+version := "0.3-SNAPSHOT"
 
 description := "Java bindings for Google SentencePiece."
 
